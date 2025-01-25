@@ -1,0 +1,47 @@
+services:
+  db:
+    image: postgres:16
+    container_name: db_dev_cmr
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dev_cmr
+      PGDATA: /var/lib/postgresql/data
+      PGPORT: 5434
+    volumes:
+      - postgres_dev_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5434"
+
+  db_test:
+    image: postgres:16
+    container_name: db_test_crm
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: dev_cmr
+      PGDATA: /var/lib/postgresql/data
+      PGPORT: 5433
+    volumes:
+      - postgres_test_data:/var/lib/postgresql/data_tests
+    ports:
+      - "5433:5433"
+
+  pgadmin4:
+    image: elestio/pgadmin:latest
+    container_name: pgadmin_dev_cmr
+    environment:
+      PGADMIN_DEFAULT_EMAIL: dev@dev.com
+      PGADMIN_DEFAULT_PASSWORD: dev
+      PGADMIN_LISTEN_PORT: 8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./servers.json:/pgadmin4/servers.json
+    depends_on:
+      - db
+      - db_test
+
+volumes:
+  postgres_dev_data:
+  postgres_test_data:
